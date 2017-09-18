@@ -1,0 +1,72 @@
+#* @vtlvariable name="scheduledConfigs" type="java.util.Map<java.lang.String, java.util.Collection<hu.trigary.hiveheatersensors.sensorhub.entities.ScheduledConfig>>" *#
+#* @vtlvariable name="webUtils" type="hu.trigary.hiveheatersensors.sensorhub.utils.WebUtils" *#
+#* @vtlvariable name="logMap" type="java.util.Map<java.lang.Long, java.lang.String[]>" *#
+#* @vtlvariable name="sensorUnreachable" type="java.lang.String" *#
+#* @vtlvariable name="sensors" type="java.lang.Iterable<hu.trigary.hiveheatersensors.sensorhub.sensor.Sensor>" *#
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+	google.charts.load("current", {"packages": ["annotationchart"]});
+	google.charts.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn("datetime", "Time");
+		#foreach($sensor in $sensors)
+			data.addColumn("number", "$sensor.getIdentifier()");
+		#end
+		
+		data.addRows([
+			#foreach($mapEntry in $logMap.entrySet())
+				[new Date($mapEntry.getKey()),
+					#foreach($value in $mapEntry.getValue())
+						$value,
+					#end
+				],
+			#end]);
+		
+		var chart = new google.visualization.AnnotationChart(document.getElementById("chart"));
+		var options = {};
+		chart.draw(data, options);
+	}
+</script>
+
+<div id="chart" style="width: 870px; height: 500px;"></div>
+
+<style type="text/css">
+	.listedHive {
+		margin-top: 15px;
+		border: solid 1px;
+		padding: 3px;
+	}
+</style>
+
+#foreach($sensor in $sensors)
+<div class="listedHive">
+	<p>
+		<strong>Hive: </strong>
+		$sensor.getIdentifier()
+	</p>
+	
+	<p>
+		<strong>Temperature: </strong>
+		#set($sensorTemperature=$sensor.getTemperature())
+		#if($sensorTemperature)
+			$sensorTemperature
+		#else
+			$sensorUnreachable
+		#end
+	</p>
+	
+	<p>
+		<strong>Current config: </strong>
+		$sensor.getConfig().getFormatted()
+	</p>
+	
+	<p>
+		<strong>Scheduled config count: </strong>
+		$scheduledConfigs.get($sensor.getIdentifier()).size()
+	</p>
+</div>
+#end

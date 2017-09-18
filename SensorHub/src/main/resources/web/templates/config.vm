@@ -1,0 +1,7 @@
+#* @vtlvariable name="rawConfigFile" type="java.lang.String" *#
+
+<h1>Application Configuration</h1>
+<p style="margin: 5px 0 10px 0;">This file contains the default configuration for the sensors and all other, non-sensor configuration options.
+	It can only be changed directly (it can't be changed through this webpage) and the changes only take effect when the application is restarted.</p>
+
+<pre style="border: dashed 1px; padding: 5px;">$rawConfigFile</pre>

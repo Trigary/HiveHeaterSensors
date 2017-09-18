@@ -1,0 +1,25 @@
+###############################################
+# HiveHeaterSensors / SensorHub Configuration #
+###############################################
+
+#Command-line arguments:
+# debug - enable debug level logging
+
+#Console commands:
+# stop - stop the application
+
+linux-wifi-interface-name: "wlx000f600325fb" #On linux systems filter out those who aren't connected through this interface
+
+connectionTimeout: 5 #Try connecting to the ESP for this many milliseconds
+
+#Default configuration for the sensors
+defaultHeatingEnabled: false
+defaultTargetTemperature: 0
+
+minSecondsBetweenSamplings: 60 #At least this many seconds will pass between two sampling cycles
+fallBehindThreshold: 10 #Display a message if the sampling cycle falls behind more than this many seconds
+saveIfHasSeconds: 10 #Save all temperature logs if there are at least this many seconds until the next cycle
+saveEveryXCycles: 10 #Save at least every this many cycles regardless of the time until the next cycle
+
+hives: #Format: <Unique identifier>: "<MAC address>"
+  garden: "a0:b1:c2:d3:e4:f5"

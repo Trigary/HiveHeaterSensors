@@ -1,0 +1,113 @@
+#* @vtlvariable name="scheduledConfigs" type="java.util.Collection<hu.trigary.hiveheatersensors.sensorhub.entities.ScheduledConfig>" *#
+#* @vtlvariable name="scheduledForm" type="java.lang.String" *#
+#* @vtlvariable name="promConfig" type="java.lang.String" *#
+#* @vtlvariable name="currentConfig" type="java.lang.String" *#
+#* @vtlvariable name="minTemperature" type="int" *#
+#* @vtlvariable name="maxTemperature" type="int" *#
+#* @vtlvariable name="currentDatetimeLocal" type="java.lang.String" *#
+#* @vtlvariable name="formattedProm" type="java.lang.String" *#
+#* @vtlvariable name="sensorUnreachable" type="java.lang.String" *#
+#* @vtlvariable name="logEntries" type="java.lang.Iterable<hu.trigary.hiveheatersensors.sensorhub.entities.LogEntry>" *#
+#* @vtlvariable name="sensor" type="hu.trigary.hiveheatersensors.sensorhub.sensor.Sensor" *#
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+	google.charts.load("current", {"packages": ["annotationchart"]});
+	google.charts.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+		var data = new google.visualization.DataTable();
+		data.addColumn("datetime", "Time");
+		data.addColumn("number", "Temperature");
+		
+		data.addRows([
+			#foreach($logEntry in $logEntries)
+				[new Date($logEntry.getTimestamp()),
+					#if ($logEntry.getTemperature())
+						$logEntry.getTemperature()
+					#else
+						undefined
+					#end
+				],
+			#end]);
+		
+		var chart = new google.visualization.AnnotationChart(document.getElementById("chart"));
+		var options = {
+			min: -5,
+			max: 40
+		};
+		chart.draw(data, options);
+	}
+</script>
+
+<h1 style="text-align: center; font-size: 2.5em; letter-spacing: 0.3em; text-transform: uppercase; background: #dddddd; margin-bottom: 10px;">$sensor.getIdentifier()</h1>
+
+<p>
+	<strong>Temperature: </strong>
+	#set($sensorTemperature=$sensor.getTemperature())
+	#if($sensorTemperature)
+		$sensorTemperature
+	#else
+		$sensorUnreachable
+	#end
+</p>
+
+<p>
+	<strong>Current config: </strong>
+	$sensor.getConfig().getFormatted()
+</p>
+
+<p>
+	<strong>Startup config: </strong>
+	$formattedProm
+</p>
+
+$currentConfig
+
+$promConfig
+
+<p style="margin-top: 10px;"><strong>Scheduled configs:</strong></p>
+#if($scheduledConfigs.isEmpty())
+No scheduled configs
+#else
+<style type="text/css">
+	th, td {
+		border: solid 1px;
+		text-align: center;
+		vertical-align: middle;
+		padding: 3px;
+	}
+	
+	table {
+		border-collapse: collapse;
+	}
+	
+	tr:hover {
+		background: #eeeeee;
+	}
+</style>
+
+<table style="border: solid 1px; border-collapse: collapse;">
+	<tr>
+		<th>Time of execution</th>
+		<th>Content</th>
+		<th>Cancel</th>
+	</tr>
+	#foreach ($scheduled in $scheduledConfigs)
+		<tr>
+			<td>$scheduled.getFormattedTime()</td>
+			<td>$scheduled.getFormattedValue()</td>
+			<td>
+				<form action="$sensor.getIdentifier()/scheduled/$scheduled.getTimestamp()" method="post">
+					<input type="submit" value="Cancel">
+				</form>
+			</td>
+		</tr>
+	#end
+</table>
+#end
+
+$scheduledForm
+
+<div id="chart" style="width: 870px; height: 500px; margin-top: 10px;"></div>

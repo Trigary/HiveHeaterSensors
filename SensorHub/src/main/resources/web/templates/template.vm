@@ -1,0 +1,123 @@
+#* @vtlvariable name="currentSensor" type="java.lang.String" *#
+#* @vtlvariable name="contentId" type="java.lang.String" *#
+#* @vtlvariable name="content" type="java.lang.String" *#
+#* @vtlvariable name="sensors" type="java.lang.Iterable<java.lang.String>" *#
+
+<html>
+
+<head>
+	<title>Hive Heater Sensors</title>
+	
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		
+		body {
+			background: #ff8c00 url("/honeycomb.png");
+			background-size: cover;
+		}
+		
+		#main {
+			width: 900px;
+			margin: 0 auto 30px auto;
+		}
+		
+		#title {
+			background: rgba(255, 255, 255, 0.5);
+			border: solid 5px;
+			height: 80px;
+			padding-top: 15px;
+		}
+		
+		#menubar {
+			text-align: center;
+			height: 50px;
+			background: rgba(255, 255, 255, 0.65);
+			border-style: solid;
+			border-width: 0 5px 5px 5px;
+		}
+		
+		#menubar li {
+			width: 130px;
+			display: inline-block;
+			margin: 9px 35px 0 35px;
+			background: #d3d3d3;
+			border: solid 1px;
+			line-height: 30px;
+		}
+		
+		#menubar a {
+			display: block;
+			text-decoration: none;
+			font-weight: bold;
+			color: #000000;
+			letter-spacing: 0.2em;
+			font-size: 1.2em;
+		}
+		
+		#menubar a:hover, #menubar a.selected {
+			background: #adadad;
+		}
+		
+		#menubar li ul {
+			position: absolute;
+			display: none;
+			z-index: 1;
+		}
+		
+		#menubar li:hover ul {
+			display: block;
+		}
+		
+		#menubar li ul li {
+			display: block;
+			margin: -1px 0 0 -1px;
+		}
+		
+		#menubar li ul li a {
+			font-size: 1.1em;
+			font-weight: normal;
+		}
+		
+		#context {
+			background: #ffffff;
+			border-style: solid;
+			border-width: 0 5px 5px 5px;
+			padding: 10px 10px 10px 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="main">
+		<header>
+			<div id="title">
+				<h1 style="padding-left: 20px;">Hive Heater Sensors</h1>
+				<h2 style="padding-left: 40px;">Sensor Hub</h2>
+			</div>
+			
+			<ul id="menubar">
+				<li><a href="/" #if($contentId == "root") class="selected" #end>HOME</a></li>
+				<li><a #if($contentId == "hive") class="selected" #end>HIVES</a>
+					<ul>
+						#foreach($sensor in $sensors)
+							<li><a href="/hives/$sensor" #if($sensor == $currentSensor) class="selected" #end>$sensor</a></li>
+						#end
+					</ul>
+				</li>
+				<li><a href="/logs" #if($contentId == "logs") class="selected" #end>LOGS</a></li>
+				<li><a href="/config" #if($contentId == "config") class="selected" #end>CONFIG</a></li>
+			</ul>
+		</header>
+		
+		<section id="content">
+			<section id="context">
+				$content
+			</section>
+		</section>
+	</div>
+</body>
+
+</html>

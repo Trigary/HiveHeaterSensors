@@ -1,0 +1,45 @@
+#* @vtlvariable name="otherInputs" type="java.lang.String" *#
+#* @vtlvariable name="submit" type="java.lang.String" *#
+#* @vtlvariable name="sensor" type="java.lang.String" *#
+#* @vtlvariable name="type" type="java.lang.String" *#
+#* @vtlvariable name="legend" type="java.lang.String" *#
+#* @vtlvariable name="heating" type="boolean" *#
+#* @vtlvariable name="temperature" type="float" *#
+#* @vtlvariable name="step" type="float" *#
+
+<form action="$sensor/$type" method="post">
+	<fieldset style="margin-top: 10px; padding: 5px;">
+		<legend>$legend</legend>
+		
+		$otherInputs
+		
+		<label for="inputHeatingOn_$type">Heating ON</label>
+		<input type="radio" name="heating" value="on" id="inputHeatingOn_$type"
+			   onclick="document.getElementById('temperatureDiv_$type').style.display = ''"
+			#if($heating)
+			   checked
+			#end
+		>
+		<br>
+		
+		<div id="temperatureDiv_$type"
+			#if(!$heating)
+			 style="display:none;"
+			#end
+		>
+			<label for="inputTemperature_$type" style="margin-left: 20px;">Target temperature: </label>
+			<input type="number" name="temperature" value="$temperature" step="$step" id="inputTemperature_$type">
+		</div>
+		
+		<label for="inputHeatingOff_$type">Heating OFF</label>
+		<input type="radio" name="heating" value="off" id="inputHeatingOff_$type"
+			   onclick="document.getElementById('temperatureDiv_$type').style.display = 'none'"
+			#if(!$heating)
+			   checked
+			#end
+		>
+		<br>
+		
+		<input type="submit" value="$submit">
+	</fieldset>
+</form>

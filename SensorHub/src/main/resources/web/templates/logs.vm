@@ -1,0 +1,15 @@
+#* @vtlvariable name="fileSize" type="java.lang.String" *#
+#* @vtlvariable name="rawLogsFile" type="java.lang.String" *#
+
+<h1>Application Logs</h1>
+
+<p style="margin: 5px 0 5px 0;">Log file size: $fileSize</p>
+
+<p style="margin-bottom: 10px;">These are the last 50 log entries. For the complete list, you must access the log file (logs.txt) directly.</p>
+
+<textarea id="logsFileTextarea" readonly rows="25" cols="121">$rawLogsFile</textarea>
+
+<script type="text/javascript">
+	var textarea = document.getElementById("logsFileTextarea");
+	textarea.scrollTop = textarea.scrollHeight;
+</script>

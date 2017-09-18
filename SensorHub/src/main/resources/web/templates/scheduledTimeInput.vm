@@ -1,0 +1,6 @@
+#* @vtlvariable name="type" type="java.lang.String" *#
+#* @vtlvariable name="currentDatetimeLocal" type="java.lang.String" *#
+
+<label for="inputTimestamp_$type">Time of execution:</label>
+<input type="datetime-local" name="timestamp" value="$currentDatetimeLocal" min="$currentDatetimeLocal" id="inputTimestamp_$type">
+<br>
