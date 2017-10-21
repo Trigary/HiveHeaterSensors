@@ -162,7 +162,7 @@ public class SensorImpl implements Sensor {
 				if (getConnectionResult("?v=" + config.getValue())) {
 					logger.info("IP successfully set: " + ip);
 				} else {
-					logger.debug("Successfully found the IP %s but failed to send the config.", ip);
+					logger.debug("Successfully found the IP %s but failed to send the config", ip);
 					return null;
 				}
 			}

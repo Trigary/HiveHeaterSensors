@@ -3,6 +3,7 @@ package hu.trigary.hiveheatersensors.sensorhub;
 import hu.trigary.hiveheatersensors.sensorhub.entities.GeneralSensorConfig;
 import hu.trigary.hiveheatersensors.sensorhub.entities.SensorConfig;
 import hu.trigary.hiveheatersensors.sensorhub.sensor.Sensor;
+import hu.trigary.hiveheatersensors.sensorhub.sensor.SensorFactory;
 import hu.trigary.hiveheatersensors.sensorhub.utils.NetworkUtils;
 import hu.trigary.hiveheatersensors.sensorhub.utils.SimpleLogger;
 import hu.trigary.hiveheatersensors.sensorhub.utils.YmlConfig;
@@ -17,13 +18,14 @@ public class SensorHub {
 		Set<String> arguments = Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toSet());
 		LOGGER = SimpleLogger.initializeAndGet(arguments.contains("debug"), SensorHub.class.getSimpleName());
 		
-		SensorHub sensorHub = new SensorHub();
+		SensorHub sensorHub = new SensorHub(arguments.contains("mock"));
 		sensorHub.start();
 		
 		Scanner inputScanner = new Scanner(System.in);
 		while (true) {
 			String line = inputScanner.nextLine();
 			if (line.equals("stop")) {
+				inputScanner.close();
 				break;
 			} else {
 				System.out.println("Invalid command.");
@@ -33,7 +35,7 @@ public class SensorHub {
 		sensorHub.stop();
 	}
 	
-	public SensorHub() {
+	public SensorHub(boolean mockSensor) {
 		LOGGER.info("Initializing...");
 		
 		YmlConfig config = new YmlConfig("config");
@@ -42,6 +44,10 @@ public class SensorHub {
 		GeneralSensorConfig generalSensorConfig = new GeneralSensorConfig(config.getInteger("connectionTimeout") * 1000);
 		boolean defaultHeatingEnabled = config.getBoolean("defaultHeatingEnabled");
 		float defaultTargetTemperature = config.getFloat("defaultTargetTemperature");
+		SensorFactory sensorFactory = new SensorFactory(mockSensor, generalSensorConfig);
+		if (mockSensor) {
+			LOGGER.info("Sensor mocking mode enabled");
+		}
 		
 		Map<String, String> identifierMacPairs = config.getStringStringMap("hives")
 				.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey))
@@ -49,7 +55,7 @@ public class SensorHub {
 		
 		for (Map.Entry<String, String> entry : identifierMacPairs.entrySet()) {
 			SensorConfig sensorConfig = SensorConfig.loadOrDefault(entry.getKey(), defaultHeatingEnabled, defaultTargetTemperature);
-			sensors.put(entry.getKey(), Sensor.create(entry.getKey(), generalSensorConfig, sensorConfig, entry.getValue()));
+			sensors.put(entry.getKey(), sensorFactory.create(entry.getKey(), sensorConfig, entry.getValue()));
 		}
 		
 		scheduledConfigExecutor = new ScheduledConfigExecutor(this);

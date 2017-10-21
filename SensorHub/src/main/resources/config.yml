@@ -4,6 +4,7 @@
 
 #Command-line arguments:
 # debug - enable debug level logging
+# mock - enable sensor mocking mode
 
 #Console commands:
 # stop - stop the application
