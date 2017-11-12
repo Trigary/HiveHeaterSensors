@@ -7,7 +7,6 @@ import hu.trigary.hiveheatersensors.sensorhub.utils.SerializationUtils;
 import hu.trigary.hiveheatersensors.sensorhub.utils.SimpleLogger;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class DataLogger {
@@ -21,7 +20,7 @@ public class DataLogger {
 		this.saveCycles = saveCycles;
 		
 		for (String identifier : sensorHub.getSensorIdentifiers()) {
-			logEntries.put(identifier, Collections.synchronizedList(new LinkedList<>()));
+			logEntries.put(identifier, new LinkedList<>());
 		}
 		
 		Map<String, List<String>> serialized = SerializationUtils.loadJson("temperature-logs", new TypeToken<Map<String, List<String>>>() {}.getType());
@@ -51,7 +50,7 @@ public class DataLogger {
 	private final int fallBehindThreshold;
 	private final int saveTime;
 	private final int saveCycles;
-	private final Map<String, List<LogEntry>> logEntries = new ConcurrentHashMap<>();
+	private final Map<String, List<LogEntry>> logEntries = new HashMap<>();
 	private final Thread thread = new Thread(this::loop);
 	
 	
@@ -67,8 +66,10 @@ public class DataLogger {
 	
 	
 	
-	public Collection<LogEntry> getLogEntries(Sensor sensor) {
-		return logEntries.get(sensor.getIdentifier());
+	public LogEntry[] getLogEntries(Sensor sensor) {
+		synchronized (logEntries) {
+			return logEntries.get(sensor.getIdentifier()).toArray(new LogEntry[0]);
+		}
 	}
 	
 	
@@ -130,25 +131,27 @@ public class DataLogger {
 			LOGGER.debug("Couldn't log from sensor: " + sensor.getIdentifier());
 		}
 		
-		LogEntry newEntry = new LogEntry(temperature);
-		List<LogEntry> list = logEntries.get(sensor.getIdentifier());
-		if (list.size() < 2) {
-			list.add(newEntry);
-			return;
-		}
-		
-		ListIterator<LogEntry> iterator = list.listIterator(list.size());
-		LogEntry lastEntry = iterator.previous();
-		if (!lastEntry.contentEquals(newEntry)) {
-			list.add(newEntry);
-			return;
-		}
-		
-		LogEntry beforeLastEntry = iterator.previous();
-		if (beforeLastEntry.contentEquals(newEntry)) {
-			lastEntry.update();
-		} else {
-			list.add(newEntry);
+		synchronized (logEntries) {
+			LogEntry newEntry = new LogEntry(temperature);
+			List<LogEntry> list = logEntries.get(sensor.getIdentifier());
+			if (list.size() < 2) {
+				list.add(newEntry);
+				return;
+			}
+			
+			ListIterator<LogEntry> iterator = list.listIterator(list.size());
+			LogEntry lastEntry = iterator.previous();
+			if (!lastEntry.contentEquals(newEntry)) {
+				list.add(newEntry);
+				return;
+			}
+			
+			LogEntry beforeLastEntry = iterator.previous();
+			if (beforeLastEntry.contentEquals(newEntry)) {
+				lastEntry.update();
+			} else {
+				list.add(newEntry);
+			}
 		}
 	}
 	

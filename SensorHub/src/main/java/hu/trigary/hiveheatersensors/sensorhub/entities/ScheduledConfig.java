@@ -19,7 +19,7 @@ public class ScheduledConfig {
 	}
 	
 	private final Sensor sensor;
-	private long timestamp;
+	private volatile long timestamp;
 	private final boolean heatingEnabled;
 	private final float targetTemperature;
 	

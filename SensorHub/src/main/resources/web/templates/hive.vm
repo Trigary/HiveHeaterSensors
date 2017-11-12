@@ -7,7 +7,7 @@
 #* @vtlvariable name="currentDatetimeLocal" type="java.lang.String" *#
 #* @vtlvariable name="formattedProm" type="java.lang.String" *#
 #* @vtlvariable name="sensorUnreachable" type="java.lang.String" *#
-#* @vtlvariable name="logEntries" type="java.lang.Iterable<hu.trigary.hiveheatersensors.sensorhub.entities.LogEntry>" *#
+#* @vtlvariable name="logEntries" type="hu.trigary.hiveheatersensors.sensorhub.entities.LogEntry[]" *#
 #* @vtlvariable name="sensor" type="hu.trigary.hiveheatersensors.sensorhub.sensor.Sensor" *#
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

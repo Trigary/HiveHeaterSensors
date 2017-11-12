@@ -17,7 +17,7 @@ public class SensorMock implements Sensor {
 	
 	private final String identifier;
 	private final SensorConfig config;
-	private int prom;
+	private volatile int prom;
 	
 	
 	

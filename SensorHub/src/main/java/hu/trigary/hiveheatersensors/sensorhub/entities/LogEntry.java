@@ -9,7 +9,7 @@ public class LogEntry {
 	}
 	
 	private final Float temperature;
-	private long timestamp;
+	private volatile long timestamp;
 	
 	
 	
