@@ -10,6 +10,10 @@ import java.util.Map;
 
 public class ScheduledConfig {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("YY/MM/dd HH:mm");
+	private final Sensor sensor;
+	private volatile long timestamp;
+	private final boolean heatingEnabled;
+	private final float targetTemperature;
 	
 	public ScheduledConfig(Sensor sensor, long timestamp, boolean heatingEnabled, float targetTemperature) {
 		this.sensor = sensor;
@@ -17,11 +21,6 @@ public class ScheduledConfig {
 		this.heatingEnabled = heatingEnabled;
 		this.targetTemperature = targetTemperature;
 	}
-	
-	private final Sensor sensor;
-	private volatile long timestamp;
-	private final boolean heatingEnabled;
-	private final float targetTemperature;
 	
 	
 	

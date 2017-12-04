@@ -8,16 +8,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SensorMock implements Sensor {
 	private static final double CONNECTION_CHANCE = 0.5;
+	private final String identifier;
+	private final SensorConfig config;
+	private volatile int prom;
 	
 	SensorMock(String identifier, GeneralSensorConfig generalConfig, SensorConfig config) {
 		this.identifier = identifier;
 		this.config = config;
 		prom = 255;
 	}
-	
-	private final String identifier;
-	private final SensorConfig config;
-	private volatile int prom;
 	
 	
 	

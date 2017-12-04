@@ -17,6 +17,12 @@ public class SimpleLogger {
 		CONSOLE_HANDLER.setLevel(Level.INFO);
 	}
 	
+	
+	
+	private final Logger logger;
+	private static boolean debug = false;
+	private static FileHandler fileHandler = null;
+	
 	public SimpleLogger(String name) {
 		logger = Logger.getLogger(name);
 		logger.setUseParentHandlers(false);
@@ -27,10 +33,6 @@ public class SimpleLogger {
 			logger.addHandler(fileHandler);
 		}
 	}
-	
-	private final Logger logger;
-	private static boolean debug = false;
-	private static FileHandler fileHandler = null;
 	
 	
 	
@@ -117,9 +119,9 @@ public class SimpleLogger {
 			if (record.getThrown() != null) {
 				try {
 					StringWriter stringWriter = new StringWriter();
-					PrintWriter printWriter = new PrintWriter(stringWriter);
-					record.getThrown().printStackTrace(printWriter);
-					printWriter.close();
+					try (PrintWriter printWriter = new PrintWriter(stringWriter)) {
+						record.getThrown().printStackTrace(printWriter);
+					}
 					out.append(stringWriter.toString());
 				} catch (Exception e) {
 					e.printStackTrace();

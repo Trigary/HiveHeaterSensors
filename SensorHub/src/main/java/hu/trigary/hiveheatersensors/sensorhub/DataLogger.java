@@ -11,6 +11,13 @@ import java.util.stream.Collectors;
 
 public class DataLogger {
 	private static final SimpleLogger LOGGER = new SimpleLogger(DataLogger.class.getSimpleName());
+	private final SensorHub sensorHub;
+	private final int minWait;
+	private final int fallBehindThreshold;
+	private final int saveTime;
+	private final int saveCycles;
+	private final Map<String, List<LogEntry>> logEntries = new HashMap<>();
+	private final Thread thread = new Thread(this::loop);
 	
 	public DataLogger(SensorHub sensorHub, int minWait, int fallBehindThreshold, int saveTime, int saveCycles) {
 		this.sensorHub = sensorHub;
@@ -45,14 +52,6 @@ public class DataLogger {
 		}
 	}
 	
-	private final SensorHub sensorHub;
-	private final int minWait;
-	private final int fallBehindThreshold;
-	private final int saveTime;
-	private final int saveCycles;
-	private final Map<String, List<LogEntry>> logEntries = new HashMap<>();
-	private final Thread thread = new Thread(this::loop);
-	
 	
 	
 	public void start() {
@@ -63,8 +62,6 @@ public class DataLogger {
 		thread.interrupt();
 		thread.join();
 	}
-	
-	
 	
 	public LogEntry[] getLogEntries(Sensor sensor) {
 		synchronized (logEntries) {
@@ -154,8 +151,6 @@ public class DataLogger {
 			}
 		}
 	}
-	
-	
 	
 	private void save() {
 		SerializationUtils.saveJson("temperature-logs", logEntries.entrySet().stream()

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 public class ScheduledConfigExecutor {
 	private static final SimpleLogger LOGGER = new SimpleLogger(ScheduledConfigExecutor.class.getSimpleName());
+	private final Map<String, NavigableMap<Long, ScheduledConfig>> scheduledConfigs = new HashMap<>();
+	private final Thread thread = new Thread(this::loop);
 	
 	public ScheduledConfigExecutor(SensorHub sensorHub) {
 		for (String sensor : sensorHub.getSensorIdentifiers()) {
@@ -40,9 +42,6 @@ public class ScheduledConfigExecutor {
 			LOGGER.info("No saved scheduled configs were found");
 		}
 	}
-	
-	private final Map<String, NavigableMap<Long, ScheduledConfig>> scheduledConfigs = new HashMap<>();
-	private final Thread thread = new Thread(this::loop);
 	
 	
 	
@@ -160,8 +159,6 @@ public class ScheduledConfigExecutor {
 			}
 		}
 	}
-	
-	
 	
 	private void save() {
 		SerializationUtils.saveJson("scheduled-configs", scheduledConfigs.entrySet().stream()

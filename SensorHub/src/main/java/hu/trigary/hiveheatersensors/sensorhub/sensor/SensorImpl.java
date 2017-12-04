@@ -13,6 +13,13 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class SensorImpl implements Sensor {
+	private final SimpleLogger logger;
+	private final GeneralSensorConfig generalConfig;
+	private final String identifier;
+	private final SensorConfig config;
+	private final String macAddress; //Also connection lock
+	private volatile URL baseUrl = null;
+	
 	SensorImpl(String identifier, GeneralSensorConfig generalConfig, SensorConfig config, String macAddress) {
 		logger = new SimpleLogger(Sensor.class.getSimpleName() + "@" + identifier);
 		this.generalConfig = generalConfig;
@@ -21,13 +28,6 @@ public class SensorImpl implements Sensor {
 		this.macAddress = macAddress;
 		logger.info("Got registered with MAC: " + macAddress);
 	}
-	
-	private final SimpleLogger logger;
-	private final GeneralSensorConfig generalConfig;
-	private final String identifier;
-	private final SensorConfig config;
-	private final String macAddress; //Also connection lock
-	private volatile URL baseUrl = null;
 	
 	
 	

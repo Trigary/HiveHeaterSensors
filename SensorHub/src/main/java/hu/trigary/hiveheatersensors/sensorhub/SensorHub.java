@@ -21,19 +21,24 @@ public class SensorHub {
 		SensorHub sensorHub = new SensorHub(arguments.contains("mock"));
 		sensorHub.start();
 		
-		Scanner inputScanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 		while (true) {
-			String line = inputScanner.nextLine();
+			String line = scanner.nextLine();
 			if (line.equals("stop")) {
-				inputScanner.close();
 				break;
 			} else {
 				System.out.println("Invalid command.");
 			}
 		}
-		
 		sensorHub.stop();
 	}
+	
+	
+	
+	private final Map<String, Sensor> sensors = new LinkedHashMap<>();
+	private final ScheduledConfigExecutor scheduledConfigExecutor;
+	private final DataLogger dataLogger;
+	private final WebServer webServer;
 	
 	public SensorHub(boolean mockSensor) {
 		LOGGER.info("Initializing...");
@@ -68,11 +73,6 @@ public class SensorHub {
 		webServer = new WebServer(this);
 	}
 	
-	private final Map<String, Sensor> sensors = new LinkedHashMap<>();
-	private final ScheduledConfigExecutor scheduledConfigExecutor;
-	private final DataLogger dataLogger;
-	private final WebServer webServer;
-	
 	
 	
 	public void start() {
@@ -102,8 +102,6 @@ public class SensorHub {
 	public Set<String> getSensorIdentifiers() {
 		return sensors.keySet();
 	}
-	
-	
 	
 	public ScheduledConfigExecutor getScheduledConfigExecutor() {
 		return scheduledConfigExecutor;

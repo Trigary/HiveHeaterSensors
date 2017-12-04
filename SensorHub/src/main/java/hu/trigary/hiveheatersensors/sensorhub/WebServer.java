@@ -25,20 +25,18 @@ import java.util.Date;
 public class WebServer {
 	private static final SimpleLogger LOGGER = new SimpleLogger(WebServer.class.getSimpleName());
 	private static final DateFormat INPUT_DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-	
 	public static final String MSG_INVALID_HIVE = "The specified hive doesn't exist.";
 	public static final String MSG_INVALID_PARAMS = "Invalid parameter(s).";
 	public static final String MSG_SENSOR_FAIL = "Failure, the sensor is probably unavailable.";
 	public static final String MSG_SUCCESS_REDIRECT = "Success, redirecting...";
 	public static final String TEXT_SENSOR_UNREACHABLE = "Sensor unreachable";
+	private final SensorHub sensorHub;
+	private final WebUtils utils;
 	
 	public WebServer(SensorHub sensorHub) {
 		this.sensorHub = sensorHub;
 		utils = new WebUtils(sensorHub);
 	}
-	
-	private final SensorHub sensorHub;
-	private final WebUtils utils;
 	
 	
 	

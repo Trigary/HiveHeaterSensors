@@ -3,13 +3,13 @@ package hu.trigary.hiveheatersensors.sensorhub.entities;
 import java.util.Objects;
 
 public class LogEntry {
+	private final Float temperature;
+	private volatile long timestamp;
+	
 	public LogEntry(Float temperature) {
 		this.temperature = temperature;
 		update();
 	}
-	
-	private final Float temperature;
-	private volatile long timestamp;
 	
 	
 	

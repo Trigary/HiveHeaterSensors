@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class YmlConfig {
 	private static final SimpleLogger LOGGER = new SimpleLogger(YmlConfig.class.getSimpleName());
+	private Map<String, Object> contents;
 	
 	public YmlConfig(String fileName) {
 		Yaml yaml = new Yaml();
@@ -41,8 +42,6 @@ public class YmlConfig {
 			contents = new HashMap<>();
 		}
 	}
-	
-	private Map<String, Object> contents;
 	
 	
 	

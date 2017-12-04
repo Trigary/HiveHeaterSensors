@@ -10,15 +10,13 @@ import java.lang.reflect.Type;
 
 public class SerializationUtils {
 	private static final SimpleLogger LOGGER = new SimpleLogger(SerializationUtils.class.getName());
+	private static final Gson GSON = new Gson();
 	
 	public static <T> T loadJson(String fileName, Type type) {
 		File file = new File(fileName + ".json");
 		if (file.exists() && file.length() > 0) {
-			try {
-				FileReader reader = new FileReader(file);
-				T output = new Gson().fromJson(reader, type);
-				reader.close();
-				return output;
+			try (FileReader reader = new FileReader(file)) {
+				return GSON.fromJson(reader, type);
 			} catch (IOException e) {
 				LOGGER.error("Failed to load JSON file %s: ", e, fileName);
 			}
@@ -37,11 +35,8 @@ public class SerializationUtils {
 			}
 		}
 		
-		try {
-			FileWriter writer = new FileWriter(file);
-			writer.write(new Gson().toJson(serializable));
-			writer.flush();
-			writer.close();
+		try (FileWriter writer = new FileWriter(file)) {
+			writer.write(GSON.toJson(serializable));
 		} catch (IOException e) {
 			LOGGER.error("Failed to save JSON file %s: ", e, fileName);
 		}

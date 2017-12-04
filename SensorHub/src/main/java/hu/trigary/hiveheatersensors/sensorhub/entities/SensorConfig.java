@@ -9,15 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensorConfig {
+	private final String saveFileName;
+	private boolean heatingEnabled;
+	private float targetTemperature;
+	
 	public SensorConfig(String identifier, boolean heatingEnabled, float targetTemperature) {
 		saveFileName = "sensor-configs" + File.separator + identifier;
 		this.heatingEnabled = heatingEnabled;
 		this.targetTemperature = targetTemperature;
 	}
-	
-	private final String saveFileName;
-	private boolean heatingEnabled;
-	private float targetTemperature;
 	
 	
 	
@@ -64,8 +64,6 @@ public class SensorConfig {
 			return "Heating disabled";
 		}
 	}
-	
-	
 	
 	public static SensorConfig loadOrDefault(String identifier, boolean defaultHeatingEnabled, float defaultTargetTemperature) {
 		Map<String, Object> map = SerializationUtils.loadJson("sensor-configs" + File.separator + identifier, new TypeToken<Map<String, Object>>() {}.getType());

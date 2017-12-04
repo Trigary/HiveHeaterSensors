@@ -4,13 +4,13 @@ import hu.trigary.hiveheatersensors.sensorhub.entities.GeneralSensorConfig;
 import hu.trigary.hiveheatersensors.sensorhub.entities.SensorConfig;
 
 public class SensorFactory {
+	private final boolean mockingMode;
+	private final GeneralSensorConfig generalConfig;
+	
 	public SensorFactory(boolean mockingMode, GeneralSensorConfig generalConfig) {
 		this.mockingMode = mockingMode;
 		this.generalConfig = generalConfig;
 	}
-	
-	private final boolean mockingMode;
-	private final GeneralSensorConfig generalConfig;
 	
 	
 	

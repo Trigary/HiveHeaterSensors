@@ -23,19 +23,19 @@ public class NetworkUtils {
 			Process process = Runtime.getRuntime().exec("arp -a");
 			
 			String errorString;
-			BufferedReader errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			while ((errorString = errorStream.readLine()) != null) {
-				LOGGER.error("arp command returned error: " + errorString);
+			try (BufferedReader errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+				while ((errorString = errorStream.readLine()) != null) {
+					LOGGER.error("arp command returned error: " + errorString);
+				}
 			}
-			errorStream.close();
 			
-			BufferedReader inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			if (System.getProperty("os.name").startsWith("Windows")) {
-				getWindowsMacIpPairs(macIpMap, inputStream);
-			} else {
-				getLinuxMacIpPairs(macIpMap, inputStream);
+			try (BufferedReader inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+				if (System.getProperty("os.name").startsWith("Windows")) {
+					getWindowsMacIpPairs(macIpMap, inputStream);
+				} else {
+					getLinuxMacIpPairs(macIpMap, inputStream);
+				}
 			}
-			inputStream.close();
 		} catch (IOException e) {
 			LOGGER.error("Error while getting MAC-IP map: ", e);
 		}
